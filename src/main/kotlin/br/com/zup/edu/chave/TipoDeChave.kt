@@ -47,4 +47,10 @@ enum class TipoDeChave {
     fun convert(): TipoChave {
         return TipoChave.valueOf(this.name)
     }
+
+    companion object{
+        fun convert(tipo:TipoChave): TipoDeChave{
+            return valueOf(tipo.name)
+        }
+    }
 }
