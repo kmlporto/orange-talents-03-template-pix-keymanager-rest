@@ -13,7 +13,7 @@ import javax.validation.Valid
 @Validated
 class CadastraChaveController (@Inject val grpcClient: KeyManagerCadastraServiceGrpc.KeyManagerCadastraServiceBlockingStub){
 
-    @Post("/api/clientes/{clientId}/key")
+    @Post("/api/clients/{clientId}/keys")
     fun cadastra(clientId: UUID,  @Valid cadastraRequest: CadastraRequest): HttpResponse<Any> {
 
         val keyResponse = grpcClient.cadastra(cadastraRequest.paraModeloGrpc(clientId))
@@ -22,5 +22,5 @@ class CadastraChaveController (@Inject val grpcClient: KeyManagerCadastraService
 
     }
 
-    private fun location(clientId: UUID, pixId: String) = HttpResponse.uri("/api/clientes/${clientId}/key/${pixId}")
+    private fun location(clientId: UUID, pixId: String) = HttpResponse.uri("/api/clients/${clientId}/key/${pixId}")
 }

@@ -39,7 +39,7 @@ internal class CadastraChaveControllerTest(
             chave = "teste@teste.com.br",
             tipoChave = TipoDeChave.EMAIL)
 
-        val request = HttpRequest.POST("/api/clientes/${clientId}/key", cadastraRequest)
+        val request = HttpRequest.POST("/api/clients/${clientId}/keys", cadastraRequest)
 
         val response = client.toBlocking().exchange(request, CadastraRequest::class.java)
 
