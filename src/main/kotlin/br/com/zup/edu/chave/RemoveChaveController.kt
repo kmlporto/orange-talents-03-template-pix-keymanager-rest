@@ -8,10 +8,10 @@ import io.micronaut.http.annotation.Delete
 import java.util.*
 import javax.inject.Inject
 
-@Controller
+@Controller("/api/clients/{clientId}/keys/{keyId}")
 class RemoveChaveController(@Inject val grpcClient: KeyManagerRemoveServiceGrpc.KeyManagerRemoveServiceBlockingStub) {
 
-    @Delete("/api/clients/{clientId}/keys/{keyId}")
+    @Delete
     fun remove(clientId: UUID, keyId: UUID): HttpResponse<Any> {
         grpcClient.remove(RemoveChaveRequest.newBuilder()
             .setClientId(clientId.toString())

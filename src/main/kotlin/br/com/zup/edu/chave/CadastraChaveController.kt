@@ -9,11 +9,11 @@ import java.util.*
 import javax.inject.Inject
 import javax.validation.Valid
 
-@Controller
+@Controller("/api/clients/{clientId}/keys")
 @Validated
 class CadastraChaveController (@Inject val grpcClient: KeyManagerCadastraServiceGrpc.KeyManagerCadastraServiceBlockingStub){
 
-    @Post("/api/clients/{clientId}/keys")
+    @Post
     fun cadastra(clientId: UUID,  @Valid cadastraRequest: CadastraRequest): HttpResponse<Any> {
 
         val keyResponse = grpcClient.cadastra(cadastraRequest.paraModeloGrpc(clientId))

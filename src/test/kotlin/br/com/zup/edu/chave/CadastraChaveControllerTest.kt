@@ -17,7 +17,7 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@MicronautTest(transactional = false)
+@MicronautTest
 internal class CadastraChaveControllerTest(
     @Inject var grpcClient: KeyManagerCadastraServiceGrpc.KeyManagerCadastraServiceBlockingStub,
     @Inject @field:Client("/") var client: HttpClient
