@@ -1,0 +1,124 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "br.com.zup.edu";
+option java_outer_classname = "KeyManager";
+option objc_class_prefix = "HLW";
+import "google/protobuf/timestamp.proto";
+
+package br.com.zup.edu;
+
+service KeyManagerCadastraService {
+  rpc cadastra(NovaChaveRequest) returns (NovaChaveResponse){}
+}
+
+/**
+    Cria nova chave pix
+ */
+message NovaChaveRequest{
+  string clientId = 1;
+  TipoConta tipoConta = 2;
+  string chave = 3;
+  TipoChave tipoChave = 4;
+}
+
+message NovaChaveResponse{
+  string pixId = 1;
+}
+
+enum TipoConta{
+  UNKNOWN_TIPO_CONTA = 0;
+  CONTA_POUPANCA = 1;
+  CONTA_CORRENTE = 2;
+}
+
+enum TipoChave{
+  UNKNOWN_TIPO_CHAVE = 0;
+  EMAIL = 1;
+  CPF = 2;
+  CELULAR = 3;
+  ALEATORIA = 4;
+}
+
+service KeyManagerRemoveService{
+  rpc remove(RemoveChaveRequest) returns (RemoveChaveResponse){}
+}
+
+/**
+    Remove chave pix
+*/
+message RemoveChaveRequest{
+  string clientId = 1;
+  string pixId = 2;
+}
+
+message RemoveChaveResponse{
+  string clientId = 1;
+  string pixId = 2;
+}
+
+/**
+    Consulta chave pix
+ */
+service KeyManagerConsultaService{
+  rpc consulta(ConsultaChaveRequest) returns (ConsultaChaveResponse){}
+}
+
+message ConsultaChaveRequest{
+  message ByClient{
+    string clientId = 1;
+    string pixId = 2;
+  }
+
+  oneof filtro{
+    ByClient byClient = 1;
+    string byChave = 2;
+  }
+}
+
+message ConsultaChaveResponse{
+  string clientId = 1;
+  string pixId = 2;
+  TipoChave tipoChave = 3;
+  string valorChave = 4;
+  TitularResponse titular = 5;
+  ContaResponse conta = 6;
+  google.protobuf.Timestamp criadoEm = 7;
+
+}
+
+message ContaResponse{
+  string instituicao = 1;
+  string agencia = 2;
+  string numero = 3;
+  TipoConta tipoConta = 4;
+}
+
+message TitularResponse{
+  string nome = 1;
+  string cpf = 2;
+}
+
+/**
+    Listagem de chave pix
+ */
+service KeyManagerListagemService{
+  rpc listagem(ListaChaveRequest) returns (ListaChaveResponse){}
+}
+
+message ListaChaveRequest{
+  string clientId = 1;
+}
+
+message ListaChaveResponse{
+  repeated DetalheChaveResponse chaves = 1;
+}
+
+message DetalheChaveResponse{
+  string clientId = 1;
+  string pixId = 2;
+  TipoChave tipoChave = 3;
+  string valorChave = 4;
+  TipoConta tipoConta = 5;
+  google.protobuf.Timestamp criadoEm = 7;
+}
