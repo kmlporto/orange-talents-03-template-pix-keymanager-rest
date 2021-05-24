@@ -10,4 +10,10 @@ enum class TipoDeConta {
         return TipoConta.valueOf(name)
     }
 
+    companion object{
+        fun convert(tipoConta: TipoConta): TipoDeConta{
+            return valueOf(tipoConta.name)
+        }
+    }
+
 }
