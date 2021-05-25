@@ -19,27 +19,20 @@ import javax.inject.Singleton
 
 @MicronautTest
 internal class CadastraChaveControllerTest(
-    @Inject var grpcClient: KeyManagerCadastraServiceGrpc.KeyManagerCadastraServiceBlockingStub,
+    @Inject var grpcClientCadastro: KeyManagerCadastraServiceGrpc.KeyManagerCadastraServiceBlockingStub,
     @Inject @field:Client("/") var client: HttpClient
 ){
 
-    @Test
-    fun `cadastra chave com sucesso`(){
+    companion object{
         val clientId = UUID.randomUUID().toString()
         val pixId = UUID.randomUUID().toString()
+    }
 
-        val responseGrpc = NovaChaveResponse.newBuilder()
-            .setPixId(pixId)
-            .build()
+    @Test
+    fun `cadastra chave com sucesso`(){
+        Mockito.`when`(grpcClientCadastro.cadastra(Mockito.any())).thenReturn(responseGrpc())
 
-        Mockito.`when`(grpcClient.cadastra(Mockito.any())).thenReturn(responseGrpc)
-
-        val cadastraRequest = CadastraRequest(
-            tipoConta = TipoDeConta.CONTA_CORRENTE,
-            chave = "teste@teste.com.br",
-            tipoChave = TipoDeChave.EMAIL)
-
-        val request = HttpRequest.POST("/api/clients/${clientId}/keys", cadastraRequest)
+        val request = HttpRequest.POST("/api/clients/${clientId}/keys", cadastraRequest())
 
         val response = client.toBlocking().exchange(request, CadastraRequest::class.java)
 
@@ -49,6 +42,19 @@ internal class CadastraChaveControllerTest(
             assertTrue(header("Location")!!.contains(clientId))
             assertTrue(header("Location")!!.contains(pixId))
         }
+    }
+
+    private fun responseGrpc(): NovaChaveResponse{
+        return NovaChaveResponse.newBuilder()
+            .setPixId(pixId)
+            .build()
+    }
+
+    private fun cadastraRequest(): CadastraRequest{
+        return CadastraRequest(
+            tipoConta = TipoDeConta.CONTA_CORRENTE,
+            chave = "teste@teste.com.br",
+            tipoChave = TipoDeChave.EMAIL)
     }
 
     @Factory

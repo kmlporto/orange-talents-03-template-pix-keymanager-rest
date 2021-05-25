@@ -19,17 +19,18 @@ import javax.inject.Singleton
 
 @MicronautTest
 internal class RemoveChaveControllerTest(
-    @Inject var grpcClient: KeyManagerRemoveServiceGrpc.KeyManagerRemoveServiceBlockingStub,
+    @Inject var grpcClientRemove: KeyManagerRemoveServiceGrpc.KeyManagerRemoveServiceBlockingStub,
     @Inject @field:Client("/") var client: HttpClient
 ){
 
+    companion object{
+        val clientId = UUID.randomUUID().toString()
+        val pixId = UUID.randomUUID().toString()
+    }
 
     @Test
     fun `remove chave com sucesso`(){
-        val clientId = UUID.randomUUID().toString()
-        val pixId = UUID.randomUUID().toString()
-
-        Mockito.`when`(grpcClient.remove(Mockito.any())).thenReturn(RemoveChaveResponse.newBuilder()
+        Mockito.`when`(grpcClientRemove.remove(Mockito.any())).thenReturn(RemoveChaveResponse.newBuilder()
                                                                     .setClientId(clientId)
                                                                     .setPixId(pixId)
                                                                     .build())

@@ -21,9 +21,10 @@ import javax.inject.Singleton
 
 @MicronautTest
 internal class ConsultaChaveControllerTest(
-    @Inject val grpcClient: KeyManagerConsultaServiceGrpc.KeyManagerConsultaServiceBlockingStub,
+    @Inject val grpcClientConsulta: KeyManagerConsultaServiceGrpc.KeyManagerConsultaServiceBlockingStub,
     @Inject @field:Client("/") var client: HttpClient
 ){
+
     companion object{
         val clientId = UUID.randomUUID().toString()
         val pixId = UUID.randomUUID().toString()
@@ -32,7 +33,7 @@ internal class ConsultaChaveControllerTest(
     @Test
     fun `consulta chave com sucesso`(){
 
-        Mockito.`when`(grpcClient.consulta(filtroByClient())).thenReturn(responseGrpc())
+        Mockito.`when`(grpcClientConsulta.consulta(filtroByClient())).thenReturn(responseGrpc())
 
         val request = HttpRequest.GET<ConsultaResponse>("/api/clients/${clientId}/keys/${pixId}")
 
@@ -41,8 +42,8 @@ internal class ConsultaChaveControllerTest(
         with(response){
             assertEquals(HttpStatus.OK, status)
             assertNotNull(body())
-            assertEquals(responseGrpc().valorChave, body().valorChave)
-            assertEquals(responseGrpc().tipoChave, body().tipoChave.convert())
+            assertEquals(responseGrpc().valorChave, body()?.valorChave)
+            assertEquals(responseGrpc().tipoChave, body()?.tipoChave!!.convert())
         }
     }
 
