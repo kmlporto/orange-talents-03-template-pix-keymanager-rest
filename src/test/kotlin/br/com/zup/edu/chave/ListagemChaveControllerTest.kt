@@ -1,9 +1,7 @@
 package br.com.zup.edu.chave
 
 import br.com.zup.edu.*
-import br.com.zup.edu.comum.grpc.GrpcClientFactory
 import com.google.protobuf.Timestamp
-import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.HttpClient
@@ -17,10 +15,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @MicronautTest
-internal class ListagemChaveControllerTest(
-    @Inject val grpcClientListagem: KeyManagerListagemServiceGrpc.KeyManagerListagemServiceBlockingStub,
-    @Inject @field:Client("/") var client: HttpClient
-){
+internal class ListagemChaveControllerTest(){
+
+    @Inject lateinit var grpcClientListagem: KeyManagerListagemServiceGrpc.KeyManagerListagemServiceBlockingStub
+
+    @Inject @field:Client("/") lateinit var client: HttpClient
+
 
     companion object{
         val clientId = UUID.randomUUID().toString()
@@ -85,14 +85,8 @@ internal class ListagemChaveControllerTest(
                             .build())
             .build()
     }
-
-    @Factory
-    @Replaces(factory = GrpcClientFactory::class)
-    internal class Clients{
-
-        @Singleton
-        fun stubMock() = Mockito.mock(KeyManagerListagemServiceGrpc.KeyManagerListagemServiceBlockingStub::class.java)
-
-    }
+    @Replaces(KeyManagerListagemServiceGrpc.KeyManagerListagemServiceBlockingStub::class)
+    @Singleton
+    fun stubMock() = Mockito.mock(KeyManagerListagemServiceGrpc.KeyManagerListagemServiceBlockingStub::class.java)
 
 }

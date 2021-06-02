@@ -1,9 +1,7 @@
 package br.com.zup.edu.chave
 
 import br.com.zup.edu.*
-import br.com.zup.edu.comum.grpc.GrpcClientFactory
 import com.google.protobuf.Timestamp
-import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
@@ -20,10 +18,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @MicronautTest
-internal class ConsultaChaveControllerTest(
-    @Inject val grpcClientConsulta: KeyManagerConsultaServiceGrpc.KeyManagerConsultaServiceBlockingStub,
-    @Inject @field:Client("/") var client: HttpClient
-){
+internal class ConsultaChaveControllerTest(){
+
+    @Inject lateinit var grpcClientConsulta: KeyManagerConsultaServiceGrpc.KeyManagerConsultaServiceBlockingStub
+
+    @Inject @field:Client("/") lateinit var client: HttpClient
+
 
     companion object{
         val clientId = UUID.randomUUID().toString()
@@ -84,11 +84,8 @@ internal class ConsultaChaveControllerTest(
 
     }
 
-    @Factory
-    @Replaces(factory = GrpcClientFactory::class)
-    internal class Clients{
-        @Singleton
-        fun stubMock() = Mockito.mock(KeyManagerConsultaServiceGrpc.KeyManagerConsultaServiceBlockingStub::class.java)
+    @Replaces(KeyManagerConsultaServiceGrpc.KeyManagerConsultaServiceBlockingStub::class)
+    @Singleton
+    fun stubMock() = Mockito.mock(KeyManagerConsultaServiceGrpc.KeyManagerConsultaServiceBlockingStub::class.java)
 
-    }
 }

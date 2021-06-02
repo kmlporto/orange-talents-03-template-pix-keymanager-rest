@@ -2,8 +2,6 @@ package br.com.zup.edu.chave
 
 import br.com.zup.edu.KeyManagerCadastraServiceGrpc
 import br.com.zup.edu.NovaChaveResponse
-import br.com.zup.edu.comum.grpc.GrpcClientFactory
-import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
@@ -18,10 +16,11 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @MicronautTest
-internal class CadastraChaveControllerTest(
-    @Inject var grpcClientCadastro: KeyManagerCadastraServiceGrpc.KeyManagerCadastraServiceBlockingStub,
-    @Inject @field:Client("/") var client: HttpClient
-){
+internal class CadastraChaveControllerTest(){
+    @Inject
+    lateinit var grpcClientCadastro: KeyManagerCadastraServiceGrpc.KeyManagerCadastraServiceBlockingStub
+
+    @Inject @field:Client("/") lateinit var client: HttpClient
 
     companion object{
         val clientId = UUID.randomUUID().toString()
@@ -57,11 +56,7 @@ internal class CadastraChaveControllerTest(
             tipoChave = TipoDeChave.EMAIL)
     }
 
-    @Factory
-    @Replaces(factory = GrpcClientFactory::class)
-    internal class Clients{
-        @Singleton
-        fun stubMock() = Mockito.mock(KeyManagerCadastraServiceGrpc.KeyManagerCadastraServiceBlockingStub::class.java)
-
-    }
+    @Replaces(KeyManagerCadastraServiceGrpc.KeyManagerCadastraServiceBlockingStub::class)
+    @Singleton
+    fun stubMock() = Mockito.mock(KeyManagerCadastraServiceGrpc.KeyManagerCadastraServiceBlockingStub::class.java)
 }
